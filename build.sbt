@@ -2,7 +2,8 @@ import sbt.Keys.{scalaVersion, version}
 
 lazy val commonSettings = Seq(
   version := "0.1",
-  scalaVersion := "2.12.6"
+  scalaVersion := "2.12.6",
+  Global / concurrentRestrictions += Tags.limit(Tags.Test, 1),
 )
 
 lazy val scalatest = "org.scalatest" %% "scalatest" % "3.0.5" % Test
@@ -49,4 +50,7 @@ lazy val root = (project in file("."))
     client,
     testcontainers,
     whisk
+  )
+  .settings(
+    Global / concurrentRestrictions += Tags.limit(Tags.Test, 1),
   )
