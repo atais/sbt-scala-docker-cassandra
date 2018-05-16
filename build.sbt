@@ -36,8 +36,8 @@ lazy val whisk = (project in file("whisk"))
     name := "whisk",
     libraryDependencies ++= Seq(
       scalatest,
-      "com.whisk" %% "docker-testkit-scalatest" % "0.9.5" % Test,
-      "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.5" % Test,
+      "com.whisk" %% "docker-testkit-scalatest" % "0.9.6" % Test,
+      "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.6" % Test
     )
   )
   .dependsOn(

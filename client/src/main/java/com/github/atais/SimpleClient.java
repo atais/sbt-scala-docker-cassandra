@@ -14,8 +14,8 @@ public class SimpleClient {
     private Cluster cluster;
     private Session session;
 
-    public void connect(String node) {
-        cluster = Cluster.builder().addContactPoint(node).build();
+    public void connect(String node, int port) {
+        cluster = Cluster.builder().addContactPoint(node).withPort(port).build();
         Metadata metadata = cluster.getMetadata();
         System.out.println("Connected to cluster:" + metadata.getClusterName());
         for (Host host : metadata.getAllHosts()) {

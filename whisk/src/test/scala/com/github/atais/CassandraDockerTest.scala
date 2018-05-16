@@ -2,14 +2,11 @@ package com.github.atais
 
 import com.whisk.docker.impl.dockerjava.DockerKitDockerJava
 import com.whisk.docker.scalatest.DockerTestKit
-import com.whisk.docker.{DockerContainer, DockerKit}
-import org.scalatest.time.{Second, Seconds, Span}
+import com.whisk.docker.{DockerContainer, DockerKit, DockerReadyChecker}
 import org.scalatest.{FlatSpec, Matchers}
 
 class CassandraDockerTest extends FlatSpec with Matchers
   with DockerCassandraService with DockerTestKit with DockerKitDockerJava {
-
-  implicit val pc = PatienceConfig(Span(20, Seconds), Span(1, Second))
 
   "Cassandra container" should "start and respond" in {
     isContainerReady(cassandraContainer).futureValue shouldBe true
@@ -19,7 +16,7 @@ class CassandraDockerTest extends FlatSpec with Matchers
     println("Test begins")
 
     val client = new SimpleClient()
-    client.connect("127.0.0.1")
+    client.connect("127.0.0.1", 9042)
     client.getSession()
     client.createSchema()
     client.loadData()
@@ -33,7 +30,8 @@ class CassandraDockerTest extends FlatSpec with Matchers
 trait DockerCassandraService extends DockerKit {
 
   val cassandraContainer: DockerContainer = DockerContainer("spotify/cassandra:latest")
-    .withPorts(9042 -> None, 9060 -> None)
+    .withPorts(9042 -> Some(9042), 9060 -> Some(9060))
+    .withReadyChecker(DockerReadyChecker.LogLineContains("Listening for thrift clients..."))
 
   abstract override def dockerContainers = cassandraContainer :: super.dockerContainers
 }
